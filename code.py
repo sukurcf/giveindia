@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from datetime import datetime
 import time, random
 import logging.handlers
@@ -30,7 +30,7 @@ def hello_world():
     global_dict[request.method][1]+=duration.seconds
     global_dict[request.method][2] = global_dict[request.method][1] / global_dict[request.method][0]
     lgr.error(str(request.method) + ' ' + str(dt['duration']))
-    return str(dt)
+    return jsonify(str(dt))
 
 @app.route('/stats')
 def statspath():
@@ -61,7 +61,7 @@ def statspath():
             v[2]=v[1]/v[0]
         except ZeroDivisionError:
             pass
-    return st+'Last minute stats - { METHOD: [ No. of reqs, TAT for all reqs., Avg TAT}:\n'+str(minute_dict)+'\nLast hour stats - { METHOD: [ No. of reqs, TAT for all reqs., Avg TAT}:\n'+str(hour_dict)
+    return jsonify(st+'Last minute stats - { METHOD: [ No. of reqs, TAT for all reqs., Avg TAT}:\n'+str(minute_dict)+'\nLast hour stats - { METHOD: [ No. of reqs, TAT for all reqs., Avg TAT}:\n'+str(hour_dict))
 
 if __name__=='__main__':
     app.run()
